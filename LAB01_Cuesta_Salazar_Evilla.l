@@ -8,6 +8,7 @@
 DIGITO [0-9]+
 LETRA  [a-zA-Z]+
 VARIABLE [a-zA-Z_][a-zA-Z0-9_]*
+VALOR [0-9]+
 %%
 "include"|"Include"|"INCLUDE"|"main"|"MAIN"|"Main"|"VOID"|"void"|"Void"|"printf"|"scanf"		{return P_RESERVADA;}
 "define"|"DEFINE"											{return P_DEFINE;}
@@ -31,6 +32,7 @@ VARIABLE [a-zA-Z_][a-zA-Z0-9_]*
 "for"													{return P_FOR;}
 "stdio.h"|"STDIO.H"|"STDLIB.H"|"stdlib.h"|"STRING.H"|"string.H"						{return LIBRERIAS;}
 {VARIABLE}												{ return NOMBRE_VARIABLE;}
+{VALOR}													{return VALOR_NUMERICO;}
 
 \n ++linenum;
 
