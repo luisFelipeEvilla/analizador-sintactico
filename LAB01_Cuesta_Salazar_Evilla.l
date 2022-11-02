@@ -14,8 +14,7 @@ VALOR [0-9]+
 "define"|"DEFINE"											{return P_DEFINE;}
 "return"|"Return"|"RETURN"										{return P_RETURN;}
 "+"|"-"|"*"|"/"												{return OPERADOR;}
-"++"													{return P_INCREMENTO;}
-"--"													{return P_DECREMENTO;}
+"++"|"--"													{return P_INCREMENTO;}
 "{"													{return A_LLAVE;}
 "}"													{return C_LLAVE;}
 "("													{return A_PARENTESIS;}
