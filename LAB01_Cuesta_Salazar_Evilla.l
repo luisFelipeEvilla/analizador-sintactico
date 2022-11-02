@@ -25,11 +25,15 @@ VALOR [0-9]+
 "int"|"double"												{return TIPO_DATO;}
 "#"													{return S_NUMERAL;}
 "<"													{return S_MENOR;}
+"<="													{return S_MENOR_IGUAL;}
 ">"													{return S_MAYOR;}
+">="													{return S_MAYOR_IGUAL;}
+"=="													{return S_COMPARAR;}
 ","													{return S_COMA;}
 "="													{return S_IGUAL;}
 "for"													{return P_FOR;}
 "while"													{return P_WHILE;}
+"do"													{return P_DO;}
 "stdio.h"|"STDIO.H"|"STDLIB.H"|"stdlib.h"|"STRING.H"|"string.H"						{return LIBRERIAS;}
 {VARIABLE}												{ return NOMBRE_VARIABLE;}
 {VALOR}													{return VALOR_NUMERICO;}
