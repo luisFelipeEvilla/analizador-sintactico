@@ -29,6 +29,7 @@ VALOR [0-9]+
 ","													{return S_COMA;}
 "="													{return S_IGUAL;}
 "for"													{return P_FOR;}
+"while"													{return P_WHILE;}
 "stdio.h"|"STDIO.H"|"STDLIB.H"|"stdlib.h"|"STRING.H"|"string.H"						{return LIBRERIAS;}
 {VARIABLE}												{ return NOMBRE_VARIABLE;}
 {VALOR}													{return VALOR_NUMERICO;}
