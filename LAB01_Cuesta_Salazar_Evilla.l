@@ -11,9 +11,9 @@
 DIGITO [0-9]+
 CADENA ["][^"]+["]
 PALABRA [^"]+
+LIBRERIA [a-zA-Z0-9]+["."][h]
 VARIABLE [a-zA-Z_][a-zA-Z0-9_]*
 VALOR [0-9]+
-ERROR_LOCO [a-zA-Z0-9_]+\.
 %%
 "void"												{return P_VOID;}
 "main"												{return P_MAIN;}
@@ -52,6 +52,6 @@ ERROR_LOCO [a-zA-Z0-9_]+\.
 {VARIABLE}											{ return NOMBRE_VARIABLE;}
 {CADENA}											{return CADENA;}
 {VALOR}												{return VALOR_NUMERICO;}
+{LIBRERIA}											{return LIBRERIA;}
 ^(.|\n)   											 {++linenum; }
-{ERROR_LOCO}										{return ERROR_LOCO;}
 %%
