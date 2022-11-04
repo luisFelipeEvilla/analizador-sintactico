@@ -11,7 +11,7 @@
 DIGITO [0-9]+
 CADENA ["][^"]+["]
 PALABRA [^"]+
-LIBRERIA [a-zA-Z0-9]+["."][h]
+LIBRERIA [a-zA-Z0-9]+["."][a-zA-Z0-9]
 VARIABLE [a-zA-Z_][a-zA-Z0-9_]*
 VALOR [0-9]+
 %%
@@ -53,5 +53,5 @@ VALOR [0-9]+
 {CADENA}											{return CADENA;}
 {VALOR}												{return VALOR_NUMERICO;}
 {LIBRERIA}											{return LIBRERIA;}
-^(.|\n)   											 {++linenum; }
+[.\n]   											 {++linenum; }
 %%
