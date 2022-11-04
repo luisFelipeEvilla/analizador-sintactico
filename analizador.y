@@ -23,6 +23,9 @@
 %token A_CORCHETE
 %token C_CORCHETE
 
+%token COMENTARIO
+%token COMENTARIO_MULTILINEA
+
 %token P_DEFIN
 %token P_RETURN
 
@@ -80,6 +83,7 @@
         | CICLO_WHILE | EXPRESIONES CICLO_WHILE
         | CICLO_DO_WHILE | EXPRESIONES CICLO_DO_WHILE
         | IF | EXPRESIONES IF
+        | COMENTARIOS | EXPRESIONES COMENTARIOS
         | EXPRESIONES error {
             printf("\nError en la linea %d \n", linenum);}
         | error {
@@ -148,7 +152,9 @@
     INCREMENTO: 
         NOMBRE_VARIABLE P_INCREMENTO
         | P_INCREMENTO NOMBRE_VARIABLE;
-    
+
+    COMENTARIOS:
+        COMENTARIO | COMENTARIO_MULTILINEA;
 %%
 extern int linenum;
 extern int yylineno;
