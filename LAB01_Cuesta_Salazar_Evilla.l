@@ -1,9 +1,12 @@
 %option yylineno
+
 %{
 	#include<stdio.h>
+	#include <string.h>
 	#include "y.tab.h"
 	
     int linenum = 1;
+	extern char* yylval;
 %}
 DIGITO [0-9]+
 LETRA  [a-zA-Z]+
@@ -34,13 +37,11 @@ VALOR [0-9]+
 "for"												{return P_FOR;}
 "while"												{return P_WHILE;}
 "do"												{return P_DO;}
-"stdio.h"|"STDIO.H"|"STDLIB.H"|"stdlib.h"|"STRING.H"|"string.H"						{return LIBRERIAS;}
+"stdio.h"|"stdlib.h"|"string.H"						{return LIBRERIAS;}
 "if"             									{return P_IF;}
 "else"             									{return P_ELSE;}
 {VARIABLE}											{ return NOMBRE_VARIABLE;}
 {VALOR}												{return VALOR_NUMERICO;}
-
-\n ++linenum;
-
+^(.|\n)   											 {++linenum; }
 
 %%
