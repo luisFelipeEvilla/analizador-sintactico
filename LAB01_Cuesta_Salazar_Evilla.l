@@ -19,7 +19,11 @@ ERROR_LOCO [a-zA-Z0-9_]+\.
 "include"											{return P_INCLUDE;}
 "define"											{return P_DEFINE;}
 "return"											{return P_RETURN;}
-"+"|"-"|"*"|"/"										{return OPERADOR;}
+"+"                                                 {return S_MAS;}
+"-"													{return S_MENOS;}
+"*"													{return S_MULTIPLICACION;}
+"/"													{return S_DIVISION;}
+"%"													{return S_MODULO;}
 "++"|"--"											{return P_INCREMENTO;}
 "{"													{return A_LLAVE;}
 "}"													{return C_LLAVE;}
