@@ -9,7 +9,8 @@
 	extern char* yylval;
 %}
 DIGITO [0-9]+
-PALABRA  [a-zA-Z0-9_]+
+CADENA ["][^"]+["]
+PALABRA [^"]+
 VARIABLE [a-zA-Z_][a-zA-Z0-9_]*
 VALOR [0-9]+
 ERROR_LOCO [a-zA-Z0-9_]+\.
@@ -33,6 +34,7 @@ ERROR_LOCO [a-zA-Z0-9_]+\.
 "["													{return A_CORCHETE;}
 ";"													{return FIN_SENTENCIA;}
 "int"|"double"|"float"|"string"							{return TIPO_DATO;}
+"\""													{return S_COMILLAS;}
 "#"													{return S_NUMERAL;}
 "<"													{return S_MENOR;}
 "<="												{return S_MENOR_IGUAL;}
@@ -44,10 +46,11 @@ ERROR_LOCO [a-zA-Z0-9_]+\.
 "for"												{return P_FOR;}
 "while"												{return P_WHILE;}
 "do"												{return P_DO;}
-"stdio.h"|"stdlib.h"|"string.H"						{return LIBRERIAS;}
+"print"|"printf"|"scanf"							{return P_FUNCION;}	
 "if"             									{return P_IF;}
 "else"             									{return P_ELSE;}
 {VARIABLE}											{ return NOMBRE_VARIABLE;}
+{CADENA}											{return CADENA;}
 {VALOR}												{return VALOR_NUMERICO;}
 ^(.|\n)   											 {++linenum; }
 {ERROR_LOCO}										{return ERROR_LOCO;}
