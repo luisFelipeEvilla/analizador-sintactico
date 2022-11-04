@@ -9,11 +9,14 @@
 	extern char* yylval;
 %}
 DIGITO [0-9]+
-LETRA  [a-zA-Z]+
+PALABRA  [a-zA-Z0-9_]+
 VARIABLE [a-zA-Z_][a-zA-Z0-9_]*
 VALOR [0-9]+
+ERROR_LOCO [a-zA-Z0-9_]+\.
 %%
-"include"|"main"|"void"								{return P_RESERVADA;}
+"void"												{return P_VOID;}
+"main"												{return P_MAIN;}
+"include"											{return P_INCLUDE;}
 "define"											{return P_DEFINE;}
 "return"											{return P_RETURN;}
 "+"|"-"|"*"|"/"										{return OPERADOR;}
@@ -25,7 +28,7 @@ VALOR [0-9]+
 "]"													{return C_CORCHETE;}
 "["													{return A_CORCHETE;}
 ";"													{return FIN_SENTENCIA;}
-"int"|"double"										{return TIPO_DATO;}
+"int"|"double"|"float"|"string"							{return TIPO_DATO;}
 "#"													{return S_NUMERAL;}
 "<"													{return S_MENOR;}
 "<="												{return S_MENOR_IGUAL;}
@@ -43,5 +46,5 @@ VALOR [0-9]+
 {VARIABLE}											{ return NOMBRE_VARIABLE;}
 {VALOR}												{return VALOR_NUMERICO;}
 ^(.|\n)   											 {++linenum; }
-
+{ERROR_LOCO}										{return ERROR_LOCO;}
 %%

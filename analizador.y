@@ -3,10 +3,11 @@
     #include<stdlib.h>
     #include<ctype.h>
 
-    int yylex();
 %}
 
-%token P_RESERVADA
+%token P_MAIN
+%token P_VOID
+%token P_INCLUDE
 %token OPERADOR
 %token A_LLAVE
 %token C_LLAVE
@@ -23,13 +24,15 @@
 %token P_DEFINE
 %token P_RETURN
 %token DIGITO
-%token LETRA
+%token PALABRA
 %token P_INCREMENTO
 %token P_DECREMENTO
 %token P_IF
 %token P_ELSE
 %token NOMBRE_VARIABLE
 %token VALOR_NUMERICO
+
+%token ERROR
 
 
 %token NUMERO
@@ -42,48 +45,57 @@
 %token S_IGUAL
 %token S_NUMERAL
 %token LIBRERIAS
+%token ERROR_LOCO
 %start INICIO
 %% 
-	INICIO: INCLUDES FUNCION_PRINCIPAL;
+	INICIO: INCLUDES FUNCION_PRINCIPAL | FUNCION_PRINCIPAL;
 
-	INCLUDES: S_NUMERAL P_RESERVADA S_MENOR LIBRERIAS S_MAYOR|S_NUMERAL P_DEFINE LETRA NUMERO;
+	INCLUDES: S_NUMERAL P_INCLUDE S_MENOR PALABRA S_MAYOR|S_NUMERAL P_DEFINE PALABRA NUMERO;
 
-	FUNCION_PRINCIPAL: TIPO_DATO P_RESERVADA A_PARENTESIS C_PARENTESIS A_LLAVE EXPRESIONES C_LLAVE;
+	FUNCION_PRINCIPAL: P_VOID P_MAIN A_PARENTESIS C_PARENTESIS A_LLAVE EXPRESIONES C_LLAVE;
 	
-	EXPRESIONES: 
-        DECLARACIONES_VARIABLES   | EXPRESIONES DECLARACIONES_VARIABLES
-        | ASIGNACION | EXPRESIONES ASIGNACION
-        | CICLO_FLOR | EXPRESIONES CICLO_FLOR
+	EXPRESIONES:
+        DECLARACIONES_VARIABLES | EXPRESIONES DECLARACIONES_VARIABLES
+        | ASIGNACION FIN_SENTENCIA | EXPRESIONES ASIGNACION FIN_SENTENCIA
+        | CICLO_FOR | EXPRESIONES CICLO_FOR
         | CICLO_WHILE | EXPRESIONES CICLO_WHILE
         | CICLO_DO_WHILE | EXPRESIONES CICLO_DO_WHILE
         | IF | EXPRESIONES IF
-        |;
+        | EXPRESIONES error {printf("\nError en la linea %d \n", linenum);}
+        | EXPRESIONES ERROR_LOCO
+        | ERROR_LOCO
+        | ;
 	
 	DECLARACIONES_VARIABLES: VARIABLE FIN_SENTENCIA | VARIABLE DECLARACIONES_VARIABLES;
 
+    VARIABLE: TIPO_DATO NOMBRE_VARIABLE 
+            | TIPO_DATO ASIGNACION
+            | S_COMA NOMBRE_VARIABLE;
+            | S_COMA ASIGNACION;
+
     ASIGNACION:
-        NOMBRE_VARIABLE S_IGUAL VALOR_NUMERICO FIN_SENTENCIA
-        | NOMBRE_VARIABLE S_IGUAL NOMBRE_VARIABLE FIN_SENTENCIA;
+        NOMBRE_VARIABLE S_IGUAL VALOR_NUMERICO
+        | NOMBRE_VARIABLE S_IGUAL NOMBRE_VARIABLE
         | NOMBRE_VARIABLE S_IGUAL OPERACION;
 
     OPERACION:
-        NOMBRE_VARIABLE OPERADOR NOMBRE_VARIABLE FIN_SENTENCIA
-        | NOMBRE_VARIABLE OPERADOR VALOR_NUMERICO FIN_SENTENCIA
-        | VALOR_NUMERICO OPERADOR NOMBRE_VARIABLE FIN_SENTENCIA
-        | VALOR_NUMERICO OPERADOR VALOR_NUMERICO FIN_SENTENCIA;
+        NOMBRE_VARIABLE OPERADOR NOMBRE_VARIABLE
+        | NOMBRE_VARIABLE OPERADOR VALOR_NUMERICO
+        | VALOR_NUMERICO OPERADOR NOMBRE_VARIABLE
+        | VALOR_NUMERICO OPERADOR VALOR_NUMERICO;
 	
-	VARIABLE: TIPO_DATO NOMBRE_VARIABLE | S_COMA NOMBRE_VARIABLE;
+	
 
     CICLO_WHILE:
         P_WHILE A_PARENTESIS CONDICION C_PARENTESIS A_LLAVE EXPRESIONES C_LLAVE FIN_SENTENCIA;
 
-    CICLO_FLOR: 
+    CICLO_FOR: 
         P_FOR A_PARENTESIS ASIGNACION CONDICION FIN_SENTENCIA INCREMENTO C_PARENTESIS A_LLAVE EXPRESIONES C_LLAVE FIN_SENTENCIA;
-
+    
     CICLO_DO_WHILE:
         P_DO A_LLAVE EXPRESIONES C_LLAVE P_WHILE A_PARENTESIS CONDICION C_PARENTESIS FIN_SENTENCIA;
     
-     IF:
+    IF:
         P_IF A_PARENTESIS CONDICION C_PARENTESIS A_LLAVE EXPRESIONES C_LLAVE FIN_SENTENCIA
         | P_IF A_PARENTESIS CONDICION C_PARENTESIS A_LLAVE EXPRESIONES C_LLAVE P_ELSE A_LLAVE EXPRESIONES C_LLAVE FIN_SENTENCIA;
 
@@ -103,6 +115,7 @@
     
 %%
 extern int linenum;
+extern int yylineno;
 
 int main(int argc, char **argv) {
     extern FILE *yyin, *yyout; 
@@ -112,14 +125,12 @@ int main(int argc, char **argv) {
     if ( argc > 0 ) {
         yyin = fopen( argv[0], "r" );
 
-        yyout = fopen("salida.txt", "w"); 
-    
-        fprintf(yyout,"Prueba con el archivo de entrada  \n");
+        printf("\nPrueba con el archivo de entrada \n");
 
         if (yyparse() == 0) {
-            fprintf(yyout,"Bien \n");
+            printf("Bien \n");
         } else { 
-            fprintf(yyout,"Linea erronea. \n");  
+            printf("Linea erronea. \n");  
         };
 
         return 0;
@@ -134,7 +145,6 @@ int yywrap()
         return 1;
 } 
 
-void yyerror(char* mensaje){
-	printf("\nAnalisis suspendido \n");
-	printf("\nMensaje: %s en la linea %d \n",mensaje, linenum);
+void yyerror(const char* mensaje){
+    printf("Error en la linea %d \n", yylineno);
 }
